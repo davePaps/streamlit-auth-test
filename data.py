@@ -4,6 +4,8 @@ import sqlite3
 conn = sqlite3.connect("app.db")
 cursor = conn.cursor()
 
+DB_PATH = "app.db"
+
 # Enable foreign key enforcement in SQLite
 cursor.execute("PRAGMA foreign_keys = ON;")
 
@@ -36,3 +38,12 @@ CREATE TABLE IF NOT EXISTS otc (
 )
 
 conn.commit()
+
+
+# function to convert users table to dataframe, this is imported in app.py
+
+def get_users_df():
+    with sqlite3.connect(DB_PATH) as conn:
+        return pd.read_sql_query(
+            "SELECT user)id, name, email, is_active FROM users", conn
+        )
