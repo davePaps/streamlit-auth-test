@@ -1,35 +1,33 @@
 import streamlit as st
-import sqlite3
-from data import get_users_df
-from auth import add_user
+from auth import add_user, get_all_users
+from db import init_db
 
-users_df = get_users_df
+# Ensure tables exist when app starts
+init_db()
 
-st.title("OTC Login Test")
+st.title("User Management")
 
-name = st.text_input("Name")
-email = st.text_input("Email")
+# --- User Registration Form ---
+with st.form("add_user_form"):
+    name = st.text_input("Name")
+    email = st.text_input("Email")
+    submitted = st.form_submit_button("Add User")
 
-if st.button("Add user"):
-    users_df, added = add_user(users_df, name, email)
+    if submitted:
+        if name and email:
+            success = add_user(name, email)
+            if success:
+                st.success(f"User '{name}' added successfully!")
+            else:
+                st.error("Email already exists.")
+        else:
+            st.warning("Please fill out both fields.")
 
-    if added:
-        st.success("User added")
-    else:
-        st.error("That email already exists")
-# login user
+# --- Display Registered Users ---
+st.subheader("Current Users")
+users = get_all_users()
 
-if st.button("Login user"):
-    match = users_df[
-        users_df["email"].str.strip().str.lower() == email.strip().lower()
-    ]
-
-    if not match.empty:
-        name = match.iloc[0]["name"]
-        st.success(f"Hello {name}")
-    else:
-        st.error("Get lost")
-
-st.subheader("Users")
-
-st.dataframe(users_df)
+if users:
+    st.dataframe(users)  # Streamlit accepts lists of dicts directly!
+else:
+    st.info("No users registered yet.")
