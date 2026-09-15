@@ -1,5 +1,5 @@
 import streamlit as st
-import sqllite3
+import sqlite3
 from data import get_users_df
 from auth import add_user
 
