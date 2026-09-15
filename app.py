@@ -1,4 +1,5 @@
 import streamlit as st
+import sqllite3
 from data import users_df
 from auth import add_user
 
