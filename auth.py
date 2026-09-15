@@ -1,18 +1,37 @@
-import data
+import sqlite3
+from db import get_connection
 
 
-def add_user(users_df, name, email):
+def add_user(name: str, email: str) -> bool:
+    """Inserts a user into SQLite. Returns True on success, False if email exists."""
+    try:
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO users (name, email) VALUES (?, ?)", (name, email)
+            )
+            conn.commit()
+            return True
+    except sqlite3.IntegrityError:
+        # Handles UNIQUE constraint failure on email
+        return False
 
-    if email in users_df["email"].values:
-        return users_df, False
 
-    new_user = {
-        "user_id": len(users_df) + 1,
-        "name": name,
-        "email": email,
-        "is_active": True
-    }
+def get_user_by_email(email: str):
+    """Fetches a single user record as a dictionary-like object."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        user = cursor.execute(
+            "SELECT * FROM users WHERE email = ?", (email,)
+        ).fetchone()
+        return dict(user) if user else None
 
-    users_df.loc[len(users_df)] = new_user
 
-    return users_df, True
+def get_all_users():
+    """Fetches all users for admin or display view."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        users = cursor.execute(
+            "SELECT user_id, name, email, is_active, created_at FROM users"
+        ).fetchall()
+        return [dict(u) for u in users]
