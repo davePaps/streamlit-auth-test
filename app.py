@@ -14,6 +14,18 @@ if st.button("Add user"):
         st.success("User added")
     else:
         st.error("That email already exists")
+# login user
+
+if st.button("Login user"):
+    match = users_df[
+        users_df["email"].str.strip().str.lower() == email.strip().lower()
+    ]
+
+    if not match.empty:
+        name = match.iloc[0]["name"]
+        st.success(f"Hello {name}")
+    else:
+        st.error("Get lost")
 
 st.subheader("Users")
 
