@@ -1,4 +1,5 @@
 import streamlit as st
+import sqlite3
 from auth import add_user, get_all_users
 from db import init_db
 
