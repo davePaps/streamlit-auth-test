@@ -1,7 +1,9 @@
 import streamlit as st
 import sqllite3
-from data import users_df
+from data import get_users_df
 from auth import add_user
+
+users_df = get_users_df
 
 st.title("OTC Login Test")
 
