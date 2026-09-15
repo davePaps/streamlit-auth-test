@@ -45,5 +45,5 @@ conn.commit()
 def get_users_df():
     with sqlite3.connect(DB_PATH) as conn:
         return pd.read_sql_query(
-            "SELECT user)id, name, email, is_active FROM users", conn
+            "SELECT user_id, name, email, is_active FROM users", conn
         )
