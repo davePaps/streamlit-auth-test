@@ -1,7 +1,9 @@
 import os
 import smtplib
 from email.message import EmailMessage
+from dotenv import load_dotenv
 
+load_dotenv()
 
 SMTP_HOST = os.environ["SMTP_HOST"]
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
